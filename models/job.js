@@ -4,9 +4,12 @@ const db = require("../db");
 const {NotFoundError} = require("../expressError")
 const {sqlForPartialUpdate} = require("../helpers/sql")
 
-// DOCUMENT HERE
+
 class Job {
-    // Creates a brand new job.
+    /** Creates a brand new job. (from data), update db, return new job data.
+    * { title, salary, equity, companyHandle }
+    * Returns { id, title, salary, equity, companyHandle }
+    **/
     static async create(data) {
         const result = await db.query(
             `INSERT INTO jobs(title,
@@ -26,7 +29,14 @@ class Job {
     }
 
 
-    // Finds every single existing job.
+    /** Finds every single existing job.
+    * searchFilters (all optional):
+    * - title
+    * - minSalary
+    * - hasEquity 
+    *
+    * Returns [{id, title, salary, equity, companyHandle, companyName}]
+    * */
     static async findAll({title, minSalary, hasEquity} = {}) {
         let query = `SELECT j.id,
                         j.title,
@@ -52,15 +62,17 @@ class Job {
         if (expressions.length > 0) {
             query += " WHERE " + expressions.join(" AND ")
         }
-        // DOCUMENT HERE
         query += " ORDER BY title";
-        // const jobsRes = await db.query(`${baseQuery.text} ORDER BY name`);
         const jobsRes = await db.query(query, values);
         return jobsRes.rows;
     }
 
-
-    // Returns data about a job based on the given ID.
+ 
+    /** Returns data about a job based on the given ID.
+    * Returns { id, title, salary, equity, companyHandle, company }
+    *   where company is { handle, name, description, numEmployees, logoUrl }
+    * Throws NotFoundError if nothing is found.
+    **/
     static async get(id) {
         const jobRes = await db.query(
             `SELECT id,
@@ -86,10 +98,10 @@ class Job {
     } 
 
 
-    // Updates a specific job's data
-    /**
+    /** Updates a specific job's data
      * Some fields are optional
-     * 
+     * Returns { id, title, salary, equity, companyHandle }
+     * Throws NotFoundError if nothing is found.
      */
     static async update(id, data) {
         const {setCols, values} = sqlForPartialUpdate(data, {})

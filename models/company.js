@@ -4,7 +4,6 @@ const db = require("../db");
 const { BadRequestError, NotFoundError } = require("../expressError");
 const { sqlForPartialUpdate } = require("../helpers/sql");
 
-/** Related functions for companies. */
 
 class Company {
   /** Create a company (from data), update db, return new company data.
@@ -24,7 +23,6 @@ class Company {
 
     if (duplicateCheck.rows[0])
       throw new BadRequestError(`Duplicate company: ${handle}`);
-
     const result = await db.query(
           `INSERT INTO companies
            (handle, name, description, num_employees, logo_url)
@@ -39,7 +37,6 @@ class Company {
         ],
     );
     const company = result.rows[0];
-
     return company;
   }
 
@@ -59,30 +56,24 @@ class Company {
     let expressions = [];
     let values = [];
     const { name, minEmployees, maxEmployees } = searchFilters;
-    // DOCUMENT HERE
     if (name) {
       values.push(`%${name}%`);
       expressions.push(`name ILIKE $${values.length}`);
     }
-    // Throws error 400 if minEmployees is greater than maxEmployees
     if (minEmployees > maxEmployees) {
       throw new BadRequestError("Min employees cannot be greater than max");
     }
-    // Checks if user has filtered for minEmployees, and pushes...
     if (minEmployees !== undefined) {
       values.push(minEmployees);
       expressions.push(`num_employees >= $${values.length}`);
     }
-    // Checks if user has filtered for maxEmployees, and pushes...
     if (maxEmployees !== undefined) {
       values.push(maxEmployees);
       expressions.push(`num_employees <= $${values.length}`);
     }
-    // DOCUMENT HERE
     if (expressions.length > 0) {
       query += " WHERE " + expressions.join(" AND ");
     }
-    // DOCUMENT HERE
     query += " ORDER BY name";
     const companiesRes = await db.query(query, values);
     return companiesRes.rows;
@@ -131,7 +122,6 @@ class Company {
           logoUrl: "logo_url",
         });
     const handleVarIdx = "$" + (values.length + 1);
-
     const querySql = `UPDATE companies 
                       SET ${setCols} 
                       WHERE handle = ${handleVarIdx} 
@@ -142,9 +132,7 @@ class Company {
                                 logo_url AS "logoUrl"`;
     const result = await db.query(querySql, [...values, handle]);
     const company = result.rows[0];
-
     if (!company) throw new NotFoundError(`No company: ${handle}`);
-
     return company;
   }
 
@@ -161,7 +149,6 @@ class Company {
            RETURNING handle`,
         [handle]);
     const company = result.rows[0];
-
     if (!company) throw new NotFoundError(`No company: ${handle}`);
   }
 }

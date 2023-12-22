@@ -175,7 +175,7 @@ describe("PATCH /companies/:handle", function () {
     expect(resp.statusCode).toEqual(401);
   })
 
-  test("unauth for anon", async function () {
+  test("unauth for anonymous users", async function () {
     const resp = await request(app)
         .patch(`/companies/c1`)
         .send({
@@ -239,7 +239,7 @@ describe("DELETE /companies/:handle", function () {
     expect(resp.statusCode).toEqual(401);
   });
 
-  test("unauth for anon", async function () {
+  test("unauth for anonymous users", async function () {
     const resp = await request(app)
         .delete(`/companies/c1`);
     expect(resp.statusCode).toEqual(401);

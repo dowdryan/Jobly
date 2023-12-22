@@ -13,7 +13,6 @@ const router = express.Router({ mergeParams: true });
 
 /** POST
  * Requires admin authorization
- * 
  * Returns: {id, title, salary, equity, companyHandle}
  */
 router.post("/", checkForAdmin, async function(req, res, next) {
@@ -36,7 +35,6 @@ router.post("/", checkForAdmin, async function(req, res, next) {
 /** GET / =>
  *   { jobs: [ { id, title, salary, equity, companyHandle, companyName }, ...] }
  * Does not require authorization
- * 
  * Can Filter for:
     * title
     * minSalary
@@ -64,7 +62,6 @@ router.get("/", async function(req, res, next) {
 
 /** GET /[jobId] => { job }
  * Does not require authorization
- * 
  * Returns: {id, title, salary, equity, company}
  * where company is {handle, name, description, numEmployees}
  */
@@ -80,8 +77,8 @@ router.get("/:id", async function(req, res, next) {
 
 /** PATCH /[jobId]  { fld1, fld2, ... } => { job }
  * Requires admin authorization
- * 
- * 
+ * Data: { title, salary, equity }
+ * Returns { id, title, salary, equity, companyHandle }
  */
 router.patch("/:id", checkForAdmin, async function(req, res, next) {
     try {
@@ -100,8 +97,6 @@ router.patch("/:id", checkForAdmin, async function(req, res, next) {
 
 /** DELETE /[handle]  =>  { deleted: id }
  * Requires admin authorization
- * 
- * 
  */
 router.delete("/:id", checkForAdmin, async function(req, res, next) {
     try {

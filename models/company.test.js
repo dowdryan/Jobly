@@ -9,14 +9,13 @@ const {
   commonAfterEach,
   commonAfterAll,
 } = require("./_testCommon");
-
 beforeAll(commonBeforeAll);
 beforeEach(commonBeforeEach);
 afterEach(commonAfterEach);
 afterAll(commonAfterAll);
 
-/************************************** create */
 
+/************************************** create */
 describe("create", function () {
   const newCompany = {
     handle: "new",
@@ -25,7 +24,6 @@ describe("create", function () {
     numEmployees: 1,
     logoUrl: "http://new.img",
   };
-
   test("works", async function () {
     let company = await Company.create(newCompany);
     expect(company).toEqual(newCompany);
@@ -44,7 +42,6 @@ describe("create", function () {
       },
     ]);
   });
-
   test("bad request with dupe", async function () {
     try {
       await Company.create(newCompany);
@@ -56,8 +53,8 @@ describe("create", function () {
   });
 });
 
-/************************************** findAll */
 
+/************************************** findAll */
 describe("findAll", function () {
   test("works: no filter", async function () {
     let companies = await Company.findAll();
@@ -97,7 +94,6 @@ describe("findAll", function () {
       },
     ])
   })
-  // CHECK BACK HERE
   test("works: all filters", async function() {
     let companies = await Company.findAll({
       name: "C", minEmployees: 2, maxEmployees: 3})
@@ -105,8 +101,8 @@ describe("findAll", function () {
   })
 });
 
-/************************************** get */
 
+/************************************** get */
 describe("get", function () {
   test("works", async function () {
     let company = await Company.get("c1");
@@ -118,7 +114,6 @@ describe("get", function () {
       logoUrl: "http://c1.img",
     });
   });
-
   test("not found if no such company", async function () {
     try {
       await Company.get("nope");
@@ -129,8 +124,8 @@ describe("get", function () {
   });
 });
 
-/************************************** update */
 
+/************************************** update */
 describe("update", function () {
   const updateData = {
     name: "New",
@@ -145,7 +140,6 @@ describe("update", function () {
       handle: "c1",
       ...updateData,
     });
-
     const result = await db.query(
           `SELECT handle, name, description, num_employees, logo_url
            FROM companies
@@ -166,13 +160,11 @@ describe("update", function () {
       numEmployees: null,
       logoUrl: null,
     };
-
     let company = await Company.update("c1", updateDataSetNulls);
     expect(company).toEqual({
       handle: "c1",
       ...updateDataSetNulls,
     });
-
     const result = await db.query(
           `SELECT handle, name, description, num_employees, logo_url
            FROM companies
@@ -205,8 +197,8 @@ describe("update", function () {
   });
 });
 
-/************************************** remove */
 
+/************************************** remove */
 describe("remove", function () {
   test("works", async function () {
     await Company.remove("c1");

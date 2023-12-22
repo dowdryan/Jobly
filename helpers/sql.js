@@ -1,6 +1,6 @@
 const { BadRequestError } = require("../expressError");
 
-// THIS NEEDS SOME GREAT DOCUMENTATION.
+
 /** This function takes 2 parameters
  * It attempts retrieve the keys (property names) of the dataToUpdate object.
  * Attempts to create an array by mapping each key in the dataToUpdate object to a string
